@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import { usePopper } from 'react-popper';
 import { Placement } from '@popperjs/core';
-import cn from 'classnames';
+import { cx } from 'emotion';
 import type * as CSS from 'csstype';
 
 import { styles } from './Tooltip.styles';
@@ -16,18 +16,16 @@ import { styles } from './Tooltip.styles';
 import tokens from '@contentful/f36-tokens';
 
 import { Portal } from '@contentful/f36-utils';
+import type { CommonProps } from '@contentful/f36-core';
+import { Primitive } from '@contentful/f36-core';
 
 export type TooltipPlace = Placement;
 
-export interface TooltipProps {
+export interface TooltipProps extends CommonProps {
   /**
    * Child nodes to be rendered in the component and that will show the tooltip when they are hovered
    */
   children: React.ReactNode;
-  /**
-   * Class names to be appended to the className prop of the Tooltip wrapper
-   */
-  className?: string;
   /**
    * HTML element used to wrap the target of the Tooltip
    */
@@ -66,17 +64,18 @@ export interface TooltipProps {
    */
   onMouseOver?: (evt: MouseEvent) => void;
   /**
+   * Function that will be called when the user uses a keyboard key on the target
+   */
+  onKeyDown?: (evt: KeyboardEvent) => void;
+
+  /**
    * It sets the "preferred" position of the Tooltip
    */
-  place?: TooltipPlace;
+  placement?: TooltipPlace;
   /**
    * Class names to be appended to the className prop of the Tooltip’s target
    */
   targetWrapperClassName?: string;
-  /**
-   * An ID used for testing purposes applied as a data attribute (data-test-id)
-   */
-  testId?: string;
   /**
    * Boolean to control whether or not to render the tooltip in a React Portal.
    * Rendering content inside a Portal allows the tooltip to escape the bounds
@@ -93,21 +92,22 @@ export const Tooltip = ({
   className,
   as: HtmlTag = 'span',
   content,
-  id,
+  id = 'cf-ui-tooltip',
   isVisible = false,
   hideDelay = 0,
   onBlur,
   onFocus,
   onMouseLeave,
   onMouseOver,
+  onKeyDown,
   targetWrapperClassName,
   maxWidth = 360,
   testId = 'cf-ui-tooltip',
-  place = 'auto',
+  placement = 'auto',
   usePortal = false,
   ...otherProps
 }: TooltipProps) => {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(isVisible);
 
   const elementRef = useRef(null);
   const popperRef = useRef(null);
@@ -116,7 +116,7 @@ export const Tooltip = ({
     elementRef.current,
     popperRef.current,
     {
-      placement: place,
+      placement: placement,
       modifiers: [
         {
           name: 'arrow',
@@ -148,11 +148,6 @@ export const Tooltip = ({
     setShow(isHoveringContent || isHoveringTarget);
   }, [isHoveringTarget, isHoveringContent]);
 
-  useEffect(() => {
-    if (isVisible) setShow(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const contentMaxWidth =
     typeof maxWidth === 'string' ? maxWidth : `${maxWidth}px`;
 
@@ -167,12 +162,13 @@ export const Tooltip = ({
   }
 
   const tooltip = (
-    <span
+    <Primitive
+      as="span"
       id={id}
       ref={popperRef}
       role="tooltip"
       style={contentStyles}
-      className={cn(styles.tooltip, className)}
+      className={cx(styles.tooltip, className)}
       data-test-id={testId}
       onMouseEnter={() => {
         setIsHoveringContent(true);
@@ -182,8 +178,9 @@ export const Tooltip = ({
       }}
       {...attributes.popper}
     >
-      <span>{content}</span>
-      <span
+      <Primitive as="span">{content}</Primitive>
+      <Primitive
+        as="span"
         className={styles.tooltipArrow}
         data-placement={
           attributes.popper && attributes.popper['data-popper-placement']
@@ -191,7 +188,7 @@ export const Tooltip = ({
         ref={setArrowRef}
         style={popperStyles.arrow}
       />
-    </span>
+    </Primitive>
   );
 
   return (
@@ -199,7 +196,7 @@ export const Tooltip = ({
       {show ? <>{usePortal ? <Portal>{tooltip}</Portal> : tooltip}</> : null}
       <HtmlTag
         ref={elementRef}
-        className={cn(styles.tooltipContainer, targetWrapperClassName)}
+        className={cx(styles.tooltipContainer, targetWrapperClassName)}
         onMouseEnter={(evt: MouseEvent) => {
           setIsHoveringTarget(true);
           if (onMouseOver) onMouseOver(evt);
@@ -216,9 +213,17 @@ export const Tooltip = ({
           setTimeout(() => setIsHoveringTarget(false), hideDelay);
           if (onBlur) onBlur(evt);
         }}
+        onKeyDown={(evt: KeyboardEvent) => {
+          if (evt.key === 'Escape') {
+            setTimeout(() => setIsHoveringTarget(false), hideDelay);
+          }
+          if (onKeyDown) onKeyDown(evt);
+        }}
         {...otherProps}
       >
-        {children}
+        {React.cloneElement(children as React.ReactElement, {
+          'aria-describedby': id,
+        })}
       </HtmlTag>
     </>
   );

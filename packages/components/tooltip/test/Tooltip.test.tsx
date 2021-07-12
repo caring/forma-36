@@ -53,7 +53,7 @@ it('renders the component with a target wrapper classname', () => {
 
 it('renders the component with a place attribute', () => {
   const { container } = render(
-    <Tooltip content="Tooltip content" place="left">
+    <Tooltip content="Tooltip content" placement="left">
       <span id="test">Hover me</span>
     </Tooltip>,
   );

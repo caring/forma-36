@@ -27,7 +27,7 @@ Tooltips are very useful to communicate extra information related to an element 
 ## Code examples
 
 ```jsx
-import { Tooltip } from '@contentful/f36-components';
+// import { Tooltip } from '@contentful/f36-components';
 <Tooltip
   place="top"
   id="tip1"
@@ -35,7 +35,7 @@ import { Tooltip } from '@contentful/f36-components';
   content="Hi I am a Tooltip"
 >
   <TextLink>Hover me</TextLink>
-</Tooltip>;
+</Tooltip>
 ```
 
 ## Content recommendations
@@ -44,11 +44,18 @@ import { Tooltip } from '@contentful/f36-components';
 
 ## Accessibility
 
-- Add `aria-describedby` property to the target element to make the contents of the tooltip more accessible
+- Do not put essential information in `Tooltip` component
+- Add unique `id` property to the tooltip, so appropriate a11y attributes could be used.
 
 ```jsx
 import { Tooltip } from '@contentful/f36-components';
 <Tooltip place="top" id="tooltip" content="Hi I am a Tooltip">
-  <TextLink aria-describedby="tooltip">Hover me</TextLink>
+  <TextLink>Hover me</TextLink>
 </Tooltip>;
 ```
+
+## Props
+
+import { Props } from '@contentful/f36-docs-utils';
+
+<Props of="Tooltip" />
