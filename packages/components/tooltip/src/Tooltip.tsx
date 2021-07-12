@@ -169,7 +169,7 @@ export const Tooltip = ({
       role="tooltip"
       style={contentStyles}
       className={cx(styles.tooltip, className)}
-      data-test-id={testId}
+      testId={testId}
       onMouseEnter={() => {
         setIsHoveringContent(true);
       }}
@@ -221,9 +221,16 @@ export const Tooltip = ({
         }}
         {...otherProps}
       >
-        {React.cloneElement(children as React.ReactElement, {
-          'aria-describedby': id,
-        })}
+        {React.Children.map<React.ReactNode, React.ReactNode>(
+          children,
+          (child) => {
+            if (React.isValidElement(child)) {
+              return React.cloneElement(child, {
+                'aria-describedby': id,
+              });
+            }
+          },
+        )}
       </HtmlTag>
     </>
   );
