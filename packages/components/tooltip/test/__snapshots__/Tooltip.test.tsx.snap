@@ -8,7 +8,9 @@ exports[`does not render the component if no mouseover event on child 1`] = `
 <span
   class="emotion-0"
 >
-  <span>
+  <span
+    aria-describedby="cf-ui-tooltip"
+  >
     Hover me
   </span>
 </span>
@@ -71,6 +73,7 @@ exports[`renders the component 1`] = `
 <span
   class="emotion-1"
   data-test-id="cf-ui-tooltip"
+  id="cf-ui-tooltip"
   role="tooltip"
   style="z-index: 10000; max-width: 360px; position: absolute; left: 0px; top: 0px;"
 >
@@ -140,6 +143,7 @@ exports[`renders the component as span with a id attribute 1`] = `
 <span
   class="emotion-1"
   data-test-id="cf-ui-tooltip"
+  id="cf-ui-tooltip"
   role="tooltip"
   style="z-index: 10000; max-width: 360px; position: absolute; left: 0px; top: 0px;"
 >
@@ -279,6 +283,7 @@ exports[`renders the component with a place attribute 1`] = `
 <span
   class="emotion-1"
   data-test-id="cf-ui-tooltip"
+  id="cf-ui-tooltip"
   role="tooltip"
   style="z-index: 10000; max-width: 360px; position: absolute; left: 0px; top: 0px;"
 >
@@ -348,6 +353,7 @@ exports[`renders the component with a target wrapper classname 1`] = `
 <span
   class="emotion-1"
   data-test-id="cf-ui-tooltip"
+  id="cf-ui-tooltip"
   role="tooltip"
   style="z-index: 10000; max-width: 360px; position: absolute; left: 0px; top: 0px;"
 >
@@ -417,6 +423,7 @@ exports[`renders the component with an additional class name 1`] = `
 <span
   class="emotion-1 extra-class-name"
   data-test-id="cf-ui-tooltip"
+  id="cf-ui-tooltip"
   role="tooltip"
   style="z-index: 10000; max-width: 360px; position: absolute; left: 0px; top: 0px;"
 >
